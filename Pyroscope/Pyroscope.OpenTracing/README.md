@@ -27,3 +27,6 @@ var tracer = tracingConfig.GetTracer();
 // wrap the OpenTracing tracer with the PyroscopeTracer and register it
 GlobalTracer.Register(new Pyroscope.OpenTracing.PyroscopeTracer(tracer));
 ```
+
+<!-- fork-test: trigger release-please smoke run -->
+
