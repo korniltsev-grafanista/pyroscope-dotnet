@@ -30,3 +30,6 @@ builder.Services.AddOpenTelemetry()
         .AddProcessor(new Pyroscope.OpenTelemetry.PyroscopeSpanProcessor());
     });
 ```
+
+<!-- fork-test: trigger release-please smoke run -->
+
