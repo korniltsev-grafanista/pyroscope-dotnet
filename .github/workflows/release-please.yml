@@ -23,14 +23,15 @@ jobs:
       opentelemetry_tag_name: ${{ steps.release.outputs['Pyroscope/Pyroscope.OpenTelemetry--tag_name'] }}
       opentelemetry_sha: ${{ steps.release.outputs['Pyroscope/Pyroscope.OpenTelemetry--sha'] }}
     steps:
-      - id: get-github-app-token
-        uses: grafana/shared-workflows/actions/create-github-app-token@580590a644e82e79bb2598bdaba0be245a14dda0 # create-github-app-token/v0.2.2
-        with:
-          github_app: pyroscope-development-app
+      # FORK-TEST: GitHub App token step disabled (no app install on personal fork)
+      # - id: get-github-app-token
+      #   uses: grafana/shared-workflows/actions/create-github-app-token@580590a644e82e79bb2598bdaba0be245a14dda0 # create-github-app-token/v0.2.2
+      #   with:
+      #     github_app: pyroscope-development-app
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
         id: release
         with:
-          token: ${{ steps.get-github-app-token.outputs.token }}
+          token: ${{ github.token }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           target-branch: main
@@ -92,8 +93,11 @@ jobs:
         working-directory: Pyroscope
       - name: Upload artifacts to draft release
         run: gh release upload --clobber "$TAG" ./Pyroscope/artifacts/bin/Pyroscope/release/Pyroscope.dll ./Pyroscope/artifacts/package/release/Pyroscope*.nupkg
-      - name: Publish to nuget.org
-        run: dotnet nuget push ./Pyroscope/artifacts/package/release/Pyroscope*.nupkg -s https://api.nuget.org/v3/index.json
+      # FORK-TEST: nuget push disabled; list packages to verify dotnet build output
+      # - name: Publish to nuget.org
+      #   run: dotnet nuget push ./Pyroscope/artifacts/package/release/Pyroscope*.nupkg -s https://api.nuget.org/v3/index.json
+      - name: List nupkg (fork-test dry-run)
+        run: find . -name '*.nupkg'
 
   publish-pyroscope-release:
     permissions:
@@ -133,8 +137,11 @@ jobs:
           gh release upload --clobber "$TAG" \
             ./Pyroscope/artifacts/bin/Pyroscope.OpenTracing/release/Pyroscope.OpenTracing.dll \
             ./Pyroscope/artifacts/package/release/Pyroscope.OpenTracing*.nupkg
-      - name: Publish to nuget.org
-        run: dotnet nuget push ./Pyroscope/artifacts/package/release/Pyroscope.OpenTracing*.nupkg -s https://api.nuget.org/v3/index.json
+      # FORK-TEST: nuget push disabled; list packages to verify dotnet build output
+      # - name: Publish to nuget.org
+      #   run: dotnet nuget push ./Pyroscope/artifacts/package/release/Pyroscope.OpenTracing*.nupkg -s https://api.nuget.org/v3/index.json
+      - name: List nupkg (fork-test dry-run)
+        run: find . -name '*.nupkg'
       - name: Publish GitHub release
         run: gh release edit "$TAG" --draft=false
 
@@ -164,7 +171,10 @@ jobs:
           gh release upload --clobber "$TAG" \
             ./Pyroscope/artifacts/bin/Pyroscope.OpenTelemetry/release/Pyroscope.OpenTelemetry.dll \
             ./Pyroscope/artifacts/package/release/Pyroscope.OpenTelemetry*.nupkg
-      - name: Publish to nuget.org
-        run: dotnet nuget push ./Pyroscope/artifacts/package/release/Pyroscope.OpenTelemetry*.nupkg -s https://api.nuget.org/v3/index.json
+      # FORK-TEST: nuget push disabled; list packages to verify dotnet build output
+      # - name: Publish to nuget.org
+      #   run: dotnet nuget push ./Pyroscope/artifacts/package/release/Pyroscope.OpenTelemetry*.nupkg -s https://api.nuget.org/v3/index.json
+      - name: List nupkg (fork-test dry-run)
+        run: find . -name '*.nupkg'
       - name: Publish GitHub release
         run: gh release edit "$TAG" --draft=false
