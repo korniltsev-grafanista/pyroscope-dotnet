@@ -23,14 +23,15 @@ jobs:
       opentelemetry_tag_name: ${{ steps.release.outputs['Pyroscope/Pyroscope.OpenTelemetry--tag_name'] }}
       opentelemetry_sha: ${{ steps.release.outputs['Pyroscope/Pyroscope.OpenTelemetry--sha'] }}
     steps:
-      - id: get-github-app-token
-        uses: grafana/shared-workflows/actions/create-github-app-token@580590a644e82e79bb2598bdaba0be245a14dda0 # create-github-app-token/v0.2.2
-        with:
-          github_app: pyroscope-development-app
+      # FORK-TEST: GitHub App token step disabled (no app install on personal fork)
+      # - id: get-github-app-token
+      #   uses: grafana/shared-workflows/actions/create-github-app-token@580590a644e82e79bb2598bdaba0be245a14dda0 # create-github-app-token/v0.2.2
+      #   with:
+      #     github_app: pyroscope-development-app
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
         id: release
         with:
-          token: ${{ steps.get-github-app-token.outputs.token }}
+          token: ${{ github.token }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           target-branch: main
@@ -109,13 +110,16 @@ jobs:
           global-json-file: global.json
       - name: Download NuGet package from release
         run: gh release download "$TAG" --pattern 'Pyroscope*.nupkg' --dir ./packages
-      - uses: grafana/shared-workflows/actions/get-vault-secrets@e7a3275d4c4978a3514801ec55708f1c599a6906
-        if: github.repository_owner == 'grafana'
-        with:
-          repo_secrets: |
-            NUGET_API_KEY=nuget:api_key
+      # FORK-TEST: vault + nuget push disabled
+      # - uses: grafana/shared-workflows/actions/get-vault-secrets@e7a3275d4c4978a3514801ec55708f1c599a6906
+      #   if: github.repository_owner == 'grafana'
+      #   with:
+      #     repo_secrets: |
+      #       NUGET_API_KEY=nuget:api_key
       - name: Publish to nuget.org
-        run: dotnet nuget push ./packages/Pyroscope*.nupkg -k "${NUGET_API_KEY}" -s https://api.nuget.org/v3/index.json
+        run: echo "skipping nuget publish in fork"
+      # - name: Publish to nuget.org
+      #   run: dotnet nuget push ./packages/Pyroscope*.nupkg -k "${NUGET_API_KEY}" -s https://api.nuget.org/v3/index.json
 
   publish-pyroscope-release:
     permissions:
@@ -172,13 +176,16 @@ jobs:
           global-json-file: global.json
       - name: Download NuGet package from release
         run: gh release download "$TAG" --pattern 'Pyroscope.OpenTracing*.nupkg' --dir ./packages
-      - uses: grafana/shared-workflows/actions/get-vault-secrets@e7a3275d4c4978a3514801ec55708f1c599a6906
-        if: github.repository_owner == 'grafana'
-        with:
-          repo_secrets: |
-            NUGET_API_KEY=nuget:api_key
+      # FORK-TEST: vault + nuget push disabled
+      # - uses: grafana/shared-workflows/actions/get-vault-secrets@e7a3275d4c4978a3514801ec55708f1c599a6906
+      #   if: github.repository_owner == 'grafana'
+      #   with:
+      #     repo_secrets: |
+      #       NUGET_API_KEY=nuget:api_key
       - name: Publish to nuget.org
-        run: dotnet nuget push ./packages/Pyroscope.OpenTracing*.nupkg -k "${NUGET_API_KEY}" -s https://api.nuget.org/v3/index.json
+        run: echo "skipping nuget publish in fork"
+      # - name: Publish to nuget.org
+      #   run: dotnet nuget push ./packages/Pyroscope.OpenTracing*.nupkg -k "${NUGET_API_KEY}" -s https://api.nuget.org/v3/index.json
 
   publish-opentracing-release:
     permissions:
@@ -235,13 +242,16 @@ jobs:
           global-json-file: global.json
       - name: Download NuGet package from release
         run: gh release download "$TAG" --pattern 'Pyroscope.OpenTelemetry*.nupkg' --dir ./packages
-      - uses: grafana/shared-workflows/actions/get-vault-secrets@e7a3275d4c4978a3514801ec55708f1c599a6906
-        if: github.repository_owner == 'grafana'
-        with:
-          repo_secrets: |
-            NUGET_API_KEY=nuget:api_key
+      # FORK-TEST: vault + nuget push disabled
+      # - uses: grafana/shared-workflows/actions/get-vault-secrets@e7a3275d4c4978a3514801ec55708f1c599a6906
+      #   if: github.repository_owner == 'grafana'
+      #   with:
+      #     repo_secrets: |
+      #       NUGET_API_KEY=nuget:api_key
       - name: Publish to nuget.org
-        run: dotnet nuget push ./packages/Pyroscope.OpenTelemetry*.nupkg -k "${NUGET_API_KEY}" -s https://api.nuget.org/v3/index.json
+        run: echo "skipping nuget publish in fork"
+      # - name: Publish to nuget.org
+      #   run: dotnet nuget push ./packages/Pyroscope.OpenTelemetry*.nupkg -k "${NUGET_API_KEY}" -s https://api.nuget.org/v3/index.json
 
   publish-opentelemetry-release:
     permissions:
